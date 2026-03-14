@@ -25,6 +25,7 @@ The system uses **CLIPSeg**, enabling **prompt-based segmentation without traini
 * Overview
 * Architecture
 * Model
+* Trained Model Weights
 * Datasets
 * Data Preprocessing
 * Training
@@ -80,7 +81,6 @@ Input Image
      ▼
 Vision Transformer (Image Encoder)
      │
-     │
 Text Prompt
      │
      ▼
@@ -107,13 +107,41 @@ Binary Mask Output
 
 # 🤖 Model
 
-Pretrained model used:
+Base pretrained model:
 
 ```
 CIDAS/clipseg-rd64-refined
 ```
 
-CLIPSeg enables **prompt-conditioned segmentation**, meaning the model can segment different objects based solely on text instructions.
+This model was **fine-tuned for drywall defect segmentation** using crack and drywall seam datasets.
+
+---
+
+# 📥 Trained Model Weights
+
+The trained model weights are hosted on **Hugging Face** because the file size exceeds GitHub limits.
+
+**Model Repository**
+
+https://huggingface.co/gaur3009/clip_seg
+
+**Direct Download**
+
+```
+https://huggingface.co/gaur3009/clip_seg/resolve/main/clipseg_model.pth
+```
+
+Model file:
+
+```
+clipseg_model.pth
+```
+
+Model size:
+
+```
+~603 MB
+```
 
 ---
 
@@ -208,7 +236,7 @@ resize image and mask
 training input
 ```
 
-### Image Processing
+Image preprocessing steps:
 
 * Resize images to **352 × 352**
 * Convert bounding boxes to **binary masks**
@@ -323,8 +351,6 @@ for epoch in range(epochs):
 IoU = intersection / union
 ```
 
----
-
 ### Dice Score
 
 ```
@@ -340,13 +366,13 @@ Dice = 2TP / (2TP + FP + FN)
 | Mean IoU  | 0.073 |
 | Mean Dice | 0.129 |
 
-These results demonstrate that the **training pipeline works correctly**, though segmentation quality can improve with stronger annotations and longer training.
+These results demonstrate that the **training pipeline works correctly**, although segmentation quality can improve with better annotations and longer training.
 
 ---
 
 # 🖼 Visualization
 
-Example segmentation results.
+Example segmentation results:
 
 <p align="center">
 <img src="visualization.png" width="900">
@@ -391,11 +417,11 @@ predictions.zip
 
 # 📊 Evaluation Criteria
 
-| Category     | Description                   | Weight |
-| ------------ | ----------------------------- | ------ |
-| Correctness  | mIoU & Dice score             | 50     |
-| Consistency  | Performance across scenes     | 30     |
-| Presentation | Clear README, visuals, tables | 20     |
+| Category     | Description                             | Weight |
+| ------------ | --------------------------------------- | ------ |
+| Correctness  | mIoU & Dice score                       | 50     |
+| Consistency  | Stable performance across varied scenes | 30     |
+| Presentation | Clear README, tables, visuals           | 20     |
 
 ---
 
@@ -403,7 +429,7 @@ predictions.zip
 
 ### Annotation Type
 
-Datasets provided **bounding boxes**, but segmentation required **pixel masks**.
+Datasets contained **bounding box annotations**, while segmentation required **pixel masks**.
 
 Solution:
 
@@ -447,11 +473,13 @@ Ground truth masks were interpolated to match.
 ├ predictions.zip
 ```
 
+The **training and inference pipeline can be reproduced by running the notebook**.
+
 ---
 
 # 🔁 Reproducibility
 
-Set random seeds for consistent results:
+Set random seeds:
 
 ```python
 torch.manual_seed(42)
@@ -477,9 +505,9 @@ detect crack
 highlight crack
 ```
 
-### Segmentation Refinement
+### Advanced Segmentation
 
-Combine **CLIPSeg + Segment Anything (SAM)** for improved mask boundaries.
+Combine **CLIPSeg + Segment Anything (SAM)** to refine mask boundaries.
 
 ---
 
@@ -489,4 +517,4 @@ This project demonstrates a **prompt-driven segmentation system** capable of det
 
 Vision-language models such as **CLIPSeg** provide a scalable solution for **automated inspection tasks in construction environments**.
 
-Future improvements such as **better annotations, longer training, and segmentation refinement** can significantly improve segmentation performance.
+Future improvements such as **better annotations, longer training schedules, and segmentation refinement methods** can significantly improve segmentation accuracy and robustness.
